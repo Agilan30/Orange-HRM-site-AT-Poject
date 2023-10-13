@@ -1,97 +1,61 @@
-package pages;
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import java.util.List;
+class PIMPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.button = driver.find_elements(By.CLASS_NAME, "oxd-button--secondary")
+        self.txtFirstName = driver.find_element(By.CSS_SELECTOR, "[name=firstName]")
+        self.txtLastName = driver.find_element(By.CSS_SELECTOR, "[name=lastName]")
+        self.txtEmployeeId = driver.find_elements(By.CLASS_NAME, "oxd-input")
+        self.btnToggle = driver.find_element(By.CLASS_NAME, "oxd-switch-input")
+        self.txtUserName = driver.find_elements(By.TAG_NAME, "input")
+        self.txtPassword = driver.find_elements(By.TAG_NAME, "input")
+        self.txtConfirmPassword = driver.find_elements(By.TAG_NAME, "input")
+        self.Submit = driver.find_element(By.CSS_SELECTOR, "[type=submit]")
+        self.txtSearchEmpName = driver.find_elements(By.TAG_NAME, "input")
+        self.btnUpdateEmployee = driver.find_elements(By.TAG_NAME, "button")
+        self.txtUpdateEmployeeId = driver.find_elements(By.CLASS_NAME, "oxd-input")
 
-public class PIMPage {
-    @FindBy(className = "oxd-button--secondary")
-    public List<WebElement> button;
-    @FindBy(css = "[name=firstName]")
-    public WebElement txtFirstName;
-    @FindBy(css = "[name=lastName]")
-    public WebElement txtLastName;
-    @FindBy(className = "oxd-input")
-    public List<WebElement> txtEmployeeId;
-    @FindBy(className = "oxd-switch-input")
-    public WebElement btnToggle;
-    @FindBy(tagName = "input")
-    public List<WebElement> txtUserName;
-    @FindBy(tagName = "input")
-    public List<WebElement> txtPassword;
-    @FindBy(tagName = "input")
-    public List<WebElement> txtConfirmPassword;
-    @FindBy(css = "[type=submit]")
-    public WebElement Submit;
-    @FindBy(tagName = "input")
-    public List<WebElement> txtSearchEmpName;
-    @FindBy(tagName = "button")
-    public List<WebElement> btnUpdateEmployee;
-    @FindBy(className = "oxd-input")
-    public List<WebElement> txtUpdateEmployeeId;
+    def createEmployee(self, firstname, lastname, employeeId, username, password):
+        self.txtFirstName.send_keys(firstname)
+        self.txtLastName.send_keys(lastname)
+        empID = self.txtEmployeeId[4]
+        empID.clear()
+        empID.send_keys(employeeId)
+        self.btnToggle.click()
+        self.txtUserName[7].send_keys(username)
+        self.txtPassword[10].send_keys(password)
+        self.txtConfirmPassword[11].send_keys(password)
+        self.Submit.click()
 
-    public PIMPage(WebDriver driver) {
+    def createEmployeeWithoutUsername(self, firstname, lastname, employeeId, password):
+        self.txtFirstName.send_keys(firstname)
+        self.txtLastName.send_keys(lastname)
+        empID = self.txtEmployeeId[4]
+        empID.clear()
+        empID.send_keys(employeeId)
+        self.btnToggle.click()
+        self.txtPassword[10].send_keys(password)
+        self.txtConfirmPassword[11].send_keys(password)
+        self.Submit.click()
 
-        PageFactory.initElements(driver, this);
-    }
+    def searchEmployeeByInvalidName(self, employeeName):
+        self.txtSearchEmpName[1].send_keys(employeeName)
+        self.Submit.click()
 
-    public void createEmployee(String firstname, String lastname, String employeeId, String username, String password) throws InterruptedException {
-        txtFirstName.sendKeys(firstname);
-        txtLastName.sendKeys(lastname);
-        WebElement empID = txtEmployeeId.get(4);
-        Thread.sleep(1000);
-        empID.clear();
-        empID.sendKeys(Keys.CONTROL + "a");
-        empID.sendKeys(employeeId);
-        Thread.sleep(1000);
-        btnToggle.click();
-        txtUserName.get(7).sendKeys(username);
-        txtPassword.get(10).sendKeys(password);
-        txtConfirmPassword.get(11).sendKeys(password);
-        Thread.sleep(1500);
-        Submit.click();
-    }
+    def searchEmployeeByValidName(self, employeeName):
+        self.txtSearchEmpName[1].send_keys(employeeName)
+        self.Submit.click()
 
-    public void createEmployeeWithoutUsername(String firstname, String lastname, String employeeId, String password) throws InterruptedException {
-        txtFirstName.sendKeys(firstname);
-        txtLastName.sendKeys(lastname);
-        WebElement empID = txtEmployeeId.get(4);
-        Thread.sleep(1000);
-        empID.clear();
-        empID.sendKeys(Keys.CONTROL + "a");
-        empID.sendKeys(employeeId);
-        Thread.sleep(1000);
-        btnToggle.click();
-        txtPassword.get(10).sendKeys(password);
-        txtConfirmPassword.get(11).sendKeys(password);
-        Thread.sleep(1500);
-        Submit.click();
-    }
+    def updateEmployeeById(self, employeeId):
+        self.btnUpdateEmployee[6].click()
+        self.txtUpdateEmployeeId[5].clear()
+        self.txtUpdateEmployeeId[5].send_keys(employeeId)
+        self.btnUpdateEmployee[1].click()
 
-    public void SearchEmployeeByInvalidName(String employeeName) throws InterruptedException {
-        txtSearchEmpName.get(1).sendKeys(employeeName);
-        Thread.sleep(1500);
-        Submit.click();
-    }
-    public void SearchEmployeeByValidName(String employeeName) throws InterruptedException {
-        txtSearchEmpName.get(1).sendKeys(employeeName);
-        Thread.sleep(1500);
-        Submit.click();
-    }
-    public void updateEmployeeById(String employeeId) throws InterruptedException {
-        btnUpdateEmployee.get(6).click();
-        txtUpdateEmployeeId.get(5).sendKeys(Keys.CONTROL + "a" + Keys.BACK_SPACE);
-        Thread.sleep(1000);
-        txtUpdateEmployeeId.get(5).sendKeys(employeeId);
-        Thread.sleep(1500);
-        btnUpdateEmployee.get(1).click();
-    }
-    public void SearchEmployeeByValidId(String randomEmployeeId) throws InterruptedException {
-        txtEmployeeId.get(1).sendKeys(randomEmployeeId);
-        Thread.sleep(1500);
-        Submit.click();
-    }
-}
+    def searchEmployeeByValidId(self, randomEmployeeId):
+        self.txtEmployeeId[1].send_keys(randomEmployeeId)
+        self.Submit.click()
