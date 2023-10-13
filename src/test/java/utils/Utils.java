@@ -1,92 +1,64 @@
-package utils;
+import json
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+class Utils:
+    @staticmethod
+    def do_scroll(driver, height_pixel):
+        driver.execute_script("window.scrollBy(0," + str(height_pixel) + ")")
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.Duration;
+    @staticmethod
+    def load_json_file(file_location):
+        with open(file_location, 'r') as file:
+            return json.load(file)
 
-public class Utils {
-    public static void doScroll(WebDriver driver, int heightPixel) {
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("window.scrollBy(0," + heightPixel + ")");
-    }
+    @staticmethod
+    def load_json_file_containing_array(file_location, index):
+        with open(file_location, 'r') as file:
+            data = json.load(file)
+            return data[index]
 
-    public static JSONObject loadJSONFile(String fileLocation) throws IOException, ParseException {
-        JSONParser jsonParser = new JSONParser();
-        Object obj = jsonParser.parse(new FileReader(fileLocation));
-//        JSONObject jsonObject = (JSONObject) obj;
-//        return jsonObject;
-        return (JSONObject) obj;
-    }
-    public static JSONObject loadJSONFileContainingArray(String fileLocation, int index) throws IOException, ParseException {
-        JSONParser jsonParser = new JSONParser();
-        Object obj = jsonParser.parse(new FileReader(fileLocation));
-        JSONArray jsonArray = (JSONArray) obj;
-//        JSONObject jsonObject = (JSONObject) jsonArray.get(index);
-//        return jsonObject;
-        return (JSONObject) jsonArray.get(index);
-    }
+    @staticmethod
+    def wait_for_element(driver, element, time_unit_seconds):
+        wait = WebDriverWait(driver, time_unit_seconds)
+        wait.until(EC.visibility_of(element))
 
-    public static void main(String[] args) throws IOException, ParseException {
-        JSONObject userObject = Utils.loadJSONFile("./src/test/resources/Admin.json");
+    @staticmethod
+    def generate_random_number(min_val, max_val):
+        import random
+        return random.randint(min_val, max_val)
 
-        String username = (String) userObject.get("username");
-        String password = (String) userObject.get("password");
+    @staticmethod
+    def add_json_array(first_name, last_name, employee_id, username, password):
+        file_name = "./src/test/resources/Employee.json"
+        with open(file_name, 'r') as file:
+            data = json.load(file)
+            user_obj = {
+                "firstname": first_name,
+                "lastname": last_name,
+                "employeeId": employee_id,
+                "username": username,
+                "password": password
+            }
+            data.append(user_obj)
+        with open(file_name, 'w') as file:
+            json.dump(data, file)
 
-        System.out.println(username);
-        System.out.println(password);
-    }
+    @staticmethod
+    def update_json_object(file_name, key, value, index):
+        with open(file_name, 'r') as file:
+            data = json.load(file)
+            data[index][key] = value
+        with open(file_name, 'w') as file:
+            json.dump(data, file)
 
-    public static void waitForElement(WebDriver driver, WebElement element, int TIME_UNIT_SECONDS) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TIME_UNIT_SECONDS));
-        wait.until(ExpectedConditions.visibilityOf(element));
-    }
-
-    public static int generateRandomNumber(int min, int max) {
-
-        return (int) Math.round(Math.random() * (max - min) + min);
-    }
-
-    public static void addJsonArray(String firstName, String lastName, String employeeId, String username, String password) throws IOException, ParseException {
-        String fileName = "./src/test/resources/Employee.json";
-        JSONParser jsonParser = new JSONParser();
-        Object obj = jsonParser.parse(new FileReader(fileName));
-        JSONObject userObj = new JSONObject();
-        JSONArray jsonArray = (JSONArray) obj;
-
-        userObj.put("firstname", firstName);
-        userObj.put("lastname", lastName);
-        userObj.put("username", username);
-        userObj.put("password", password);
-        userObj.put("employeeId", employeeId);
-        jsonArray.add(userObj);
-
-        FileWriter file = new FileWriter(fileName);
-        file.write(jsonArray.toJSONString());
-        file.flush();
-        file.close();
-
-    }
-    public static void updateJSONObject(String fileName, String key, String value, int index) throws IOException, ParseException {
-        JSONParser jsonParser = new JSONParser();
-        Object object = jsonParser.parse(new FileReader(fileName));
-        JSONArray jsonArray = (JSONArray) object;
-        JSONObject jsonObject = (JSONObject) jsonArray.get(index);
-        jsonObject.put(key, value);
-
-        FileWriter file = new FileWriter(fileName);
-        file.write(jsonArray.toJSONString());
-        file.flush();
-        file.close();
-    }
-}
+# Example usage
+if __name__ == "__main__":
+    user_object = Utils.load_json_file("./src/test/resources/Admin.json")
+    username = user_object["username"]
+    password = user_object["password"]
+    print(username)
+    print(password)
