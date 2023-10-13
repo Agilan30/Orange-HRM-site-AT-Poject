@@ -34,7 +34,7 @@
 
 https://github.com/Agilan30/AT-Project---Orange-HRM-3.0/blob/main/AT%20Project%201.xlsx
 
-![A2](https://user-images.githubusercontent.com/123433625/221358808-8c67c1a2-769e-4ed4-b0a2-0f49e2b8e7a1.jpg)
+
 
 
 
