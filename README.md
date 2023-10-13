@@ -1,4 +1,4 @@
-# Web Automation on OrangeHRM Website with Python
+# Web Automation on OrangeHRM Website with Python, Selenium, PyTest
 
 ## PFA the Test cases scenarios 
 
