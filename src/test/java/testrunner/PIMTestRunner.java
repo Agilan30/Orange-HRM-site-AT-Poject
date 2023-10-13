@@ -9,8 +9,8 @@ import unittest
 class PIMTestRunner(unittest.TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Chrome()  # Assuming you are using Chrome driver
-        self.driver.get("your_login_page_url_here")  # Replace with your login page URL
+        self.driver = webdriver.Chrome()  
+        self.driver.get("your_login_page_url_here") 
 
     def test_doLoginWithInvalidCreds(self):
         login_page = LoginPage(self.driver)
@@ -33,14 +33,12 @@ class PIMTestRunner(unittest.TestCase):
         dashboard_page.menus[1].click()
         time.sleep(1.5)
 
-    # Define other test methods similarly
+
 
     def tearDown(self):
         self.driver.close()
 
     def get_credentials(self):
-        # Implement logic to fetch credentials from JSON file or system properties
-        # Return username and password
         pass
 
 class LoginPage:
@@ -49,18 +47,16 @@ class LoginPage:
         self.driver = driver
 
     def doLoginWithInvalidCreds(self, username, password):
-        # Implement login logic and return error message
         pass
 
     def doLogin(self, username, password):
-        # Implement login logic
         pass
 
 class DashboardPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.menus = []  # Define menus here
-
+        self.menus = []  
+    
 if __name__ == "__main__":
     unittest.main()
