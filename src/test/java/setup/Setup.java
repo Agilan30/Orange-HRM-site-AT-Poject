@@ -1,30 +1,19 @@
-package setup;
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+import unittest
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import pages.DashboardPage;
+class Setup(unittest.TestCase):
+    def setUp(self):
+        service = ChromeService(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service)
+        self.driver.maximize_window()
+        self.driver.implicitly_wait(30)
+        self.driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
 
-import java.time.Duration;
+    def tearDown(self):
+        self.driver.quit()
 
-public class Setup {
-    public WebDriver driver;
-
-    @BeforeTest
-    public void setup() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-        driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-    }
-
-    //@AfterTest
-    public void closeDriver() {
-        DashboardPage dashboardPage = new DashboardPage(driver);
-//      dashboardPage.doLogout();
-        driver.close();
-    }
-}
+if __name__ == "__main__":
+    unittest.main()
