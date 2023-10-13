@@ -1,66 +1,54 @@
-package testrunner;
+import json
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from pages import DashboardPage, LoginPage, EmployeeInfoPage
+from utils import Utils
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.annotations.Test;
-import pages.DashboardPage;
-import pages.LoginPage;
-import pages.EmployeeInfoPage;
-import setup.Setup;
-import utils.Utils;
+class TestEmployeeRunner:
 
-import java.io.IOException;
+    @pytest.fixture(scope="class")
+    def setup(self):
+        driver = webdriver.Chrome(executable_path="./path/to/chromedriver")
+        yield driver
+        driver.quit()
 
-public class EmployeeTestRunner extends Setup {
-    DashboardPage dashboardPage;
-    LoginPage loginPage;
-    EmployeeInfoPage employeeInfoPage;
-    @Test(priority = 1, description = "Login With Second User")
-    public void doLoginWithSecondUsers() throws IOException, ParseException, InterruptedException {
-        loginPage = new LoginPage(driver);
-        dashboardPage = new DashboardPage(driver);
-        JSONObject userObject = Utils.loadJSONFileContainingArray("./src/test/resources/Employee.json", 1);
-        String username = userObject.get("username").toString();
-        String password = userObject.get("password").toString();
-        loginPage.doLogin(username, password);
-        Thread.sleep(1500);
+    @pytest.mark.run(order=1)
+    def test_login_with_second_users(self, setup):
+        driver = setup
+        login_page = LoginPage(driver)
+        dashboard_page = DashboardPage(driver)
+        user_object = Utils.load_json_file_containing_array("./src/test/resources/Employee.json", 1)
+        username = user_object.get("username")
+        password = user_object.get("password")
+        login_page.do_login(username, password)
+        driver.implicitly_wait(10)
 
-        // Assertion
-        WebElement headerText = driver.findElement(By.tagName("h6"));
-        String header_actual = headerText.getText();
-        String header_expected = "Dashboard";
-        Assert.assertEquals(header_actual, header_expected);
-        Thread.sleep(1500);
+        # Assertion
+        header_text = driver.find_element(By.TAG_NAME, "h6").text
+        assert header_text == "Dashboard"
 
-    }
-    @Test(priority = 2, description = "Insert second user's Gender, Blood Type, Address and Email ")
-    public void updateUserInformation() throws IOException, ParseException, InterruptedException {
-        employeeInfoPage=new EmployeeInfoPage(driver);
-        employeeInfoPage.userMenu.get(2).click();
-        Utils.doScroll(driver,500);
-        employeeInfoPage.selectGender();
-        Thread.sleep(1000);
-        Utils.doScroll(driver,500);
-        employeeInfoPage.selectBloodType();
-        Thread.sleep(1000);
-        driver.navigate().refresh();
-        employeeInfoPage.selectContact();
-        Thread.sleep(1000);
+    @pytest.mark.run(order=2)
+    def test_update_user_information(self, setup):
+        driver = setup
+        employee_info_page = EmployeeInfoPage(driver)
+        employee_info_page.user_menu[2].click()
+        Utils.do_scroll(driver, 500)
+        employee_info_page.select_gender()
+        driver.implicitly_wait(1)
+        Utils.do_scroll(driver, 500)
+        employee_info_page.select_blood_type()
+        driver.refresh()
+        driver.implicitly_wait(1)
+        employee_info_page.select_contact()
+        driver.implicitly_wait(1)
 
-        // Assertion
-        WebElement headerText = driver.findElement(By.tagName("h6"));
-        String header_actual = headerText.getText();
-        String header_expected = "PIM";
-        Assert.assertEquals(header_actual, header_expected);
-        Thread.sleep(1000);
-    }
-    @Test(priority = 3,description = "Second User Logout Successfully")
-    public void LogOut() {
-        DashboardPage dashboardPage = new DashboardPage(driver);
-        dashboardPage.doLogout();
-        driver.close();
-    }
-}
+        # Assertion
+        header_text = driver.find_element(By.TAG_NAME, "h6").text
+        assert header_text == "PIM"
+
+    @pytest.mark.run(order=3)
+    def test_logout(self, setup):
+        driver = setup
+        dashboard_page = DashboardPage(driver)
+        dashboard_page.do_logout()
