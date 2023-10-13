@@ -1,5 +1,9 @@
 # Web Automation on OrangeHRM Website with Python
 
+## PFA the Test cases scenarios 
+
+https://github.com/Agilan30/AT-Project---Orange-HRM-3.0/blob/main/AT%20Project%201.xlsx
+
 ## Scenerios:
 
 - Login to orange hrm demo site: https://opensource-demo.orangehrmlive.com/
@@ -30,9 +34,7 @@
 - Insert the second user's Gender, Blood, Address and email. 
 - Logout second user. 
 
-## PFA the Test cases scenarios 
 
-https://github.com/Agilan30/AT-Project---Orange-HRM-3.0/blob/main/AT%20Project%201.xlsx
 
 
 
